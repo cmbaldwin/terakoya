@@ -10,4 +10,5 @@ group :development, :test do
   gem "debug"
   gem "rubocop"
   gem "rubocop-rails"
+  gem "devise" # For sandbox testing
 end

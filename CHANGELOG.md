@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-12-16
 
 ### Added
+
 - Initial gem structure with Rails 8 engine
 - Student model with polymorphic user association
 - Project model with status management (planning, active, paused, completed, archived)
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Database migrations for students and projects
 
 ### Phase 1 MVP Complete
+
 - [x] Gem skeleton with Rails engine
 - [x] Student and Project models
 - [x] Basic CRUD for projects
@@ -28,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Project dashboard view
 
 ### Coming in Phase 2
+
 - [ ] Message model and chat interface
 - [ ] Turbo Streams for real-time chat
 - [ ] Rich text support

@@ -5,6 +5,7 @@ A Rails engine for project-based learning, inspired by traditional Japanese temp
 ## Philosophy
 
 Terakoya embodies student-directed learning where:
+
 - Students choose their own projects and goals
 - Teachers act as coaches and mentors, not authorities
 - Learning happens through building real, tangible projects
@@ -20,17 +21,20 @@ gem "terakoya"
 ```
 
 And then execute:
+
 ```bash
 $ bundle install
 ```
 
 Run the installer:
+
 ```bash
 $ rails terakoya:install:migrations
 $ rails db:migrate
 ```
 
 Mount the engine in your `config/routes.rb`:
+
 ```ruby
 mount Terakoya::Engine => "/terakoya"
 ```
@@ -64,6 +68,43 @@ end
 - Ruby >= 3.2
 - Rails >= 8.0
 - PostgreSQL (recommended) or MySQL
+
+## Development
+
+### Setting up the Sandbox
+
+To test Terakoya locally during development, use the sandbox application:
+
+```bash
+# Create the sandbox with SQLite (default)
+bin/sandbox
+
+# Or with PostgreSQL
+DB=postgresql bin/sandbox
+
+# Or with MySQL
+DB=mysql bin/sandbox
+```
+
+This will create a complete Rails application in the `sandbox/` directory with:
+- Terakoya engine mounted
+- Devise authentication set up
+- A test user: `student@example.com` / `password`
+
+### Running the Sandbox
+
+```bash
+cd sandbox
+bin/rails server
+```
+
+Then visit http://localhost:3000/terakoya
+
+### Running Tests
+
+```bash
+bundle exec rake test
+```
 
 ## License
 

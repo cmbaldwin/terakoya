@@ -1,0 +1,17 @@
+===============================================================================
+
+Terakoya has been installed! 🎓
+
+Next steps:
+
+1. Run migrations:
+   $ rails terakoya:install:migrations
+   $ rails db:migrate
+
+2. Configure authentication in config/initializers/terakoya.rb
+
+3. The engine is mounted at /terakoya
+
+4. Visit http://localhost:3000/terakoya to get started!
+
+===============================================================================

@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+# Create a sandbox Rails application for testing Terakoya locally
+
+set -e
+
+case "$DB" in
+postgres|postgresql)
+  RAILSDB="postgresql"
+  ;;
+mysql)
+  RAILSDB="mysql"
+  ;;
+sqlite|'')
+  RAILSDB="sqlite3"
+  ;;
+*)
+  echo "Invalid DB specified: $DB"
+  exit 1
+  ;;
+esac
+
+echo "~~~> Removing the old sandbox"
+rm -rf ./sandbox
+
+echo "~~~> Creating a pristine Rails app"
+rails_version=$(ruby -e 'puts "~> 8.0"')
+bundle exec rails new sandbox \
+  --database="$RAILSDB" \
+  --skip-git \
+  --skip-keeps \
+  --skip-rc \
+  --skip-test
+
+if [ ! -d "sandbox" ]; then
+  echo 'sandbox rails application failed'
+  exit 1
+fi
+
+echo "~~~> Adding terakoya to the Gemfile"
+cd ./sandbox
+
+cat <<RUBY >> Gemfile
+
+gem 'terakoya', path: '..'
+gem 'devise'  # Authentication
+
+group :development, :test do
+  gem 'debug'
+end
+RUBY
+
+bundle install
+
+echo "~~~> Installing Devise"
+bundle exec rails generate devise:install
+bundle exec rails generate devise User
+
+echo "~~~> Installing Terakoya migrations"
+bundle exec rails terakoya:install:migrations
+
+echo "~~~> Creating and migrating database"
+bundle exec rails db:create db:migrate
+
+echo "~~~> Seeding with sample user"
+cat <<RUBY >> db/seeds.rb
+
+# Create a test user
+user = User.create!(
+  email: 'student@example.com',
+  password: 'password',
+  password_confirmation: 'password'
+)
+
+puts "Created test user: student@example.com / password"
+RUBY
+
+bundle exec rails db:seed
+
+echo "
+🎓 Sandbox created successfully!
+🎓 
+🎓 To start the server:
+🎓   cd sandbox
+🎓   bin/rails server
+🎓 
+🎓 Then visit http://localhost:3000/terakoya
+🎓 
+🎓 Test credentials: student@example.com / password
+"
