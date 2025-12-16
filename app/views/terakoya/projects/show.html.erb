@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h1 class="mb-2"><%= @project.title %></h1>
+        <span class="badge badge-<%= @project.status %> fs-6">
+          <%= t("terakoya.projects.status.#{@project.status}") %>
+        </span>
+      </div>
+    </div>
+
+    <div class="btn-group mb-4" role="group">
+      <% case @project.status %>
+      <% when "planning" %>
+        <%= button_to t("terakoya.projects.start"), start_project_path(@project), method: :post, class: "btn btn-success" %>
+      <% when "active" %>
+        <%= button_to t("terakoya.projects.pause"), pause_project_path(@project), method: :post, class: "btn btn-warning" %>
+        <%= button_to t("terakoya.projects.complete"), complete_project_path(@project), method: :post, class: "btn btn-success" %>
+      <% when "paused" %>
+        <%= button_to t("terakoya.projects.resume"), resume_project_path(@project), method: :post, class: "btn btn-success" %>
+      <% end %>
+
+      <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %>
+      <%= button_to "Delete", project_path(@project), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <% if @project.description.present? %>
+          <h5 class="card-title"><%= t("terakoya.projects.description") %></h5>
+          <p class="card-text"><%= @project.description %></p>
+        <% end %>
+
+        <% if @project.goal.present? %>
+          <h5 class="card-title mt-3"><%= t("terakoya.projects.goal") %></h5>
+          <p class="card-text"><%= @project.goal %></p>
+        <% end %>
+
+        <% if @project.deliverable.present? %>
+          <h5 class="card-title mt-3"><%= t("terakoya.projects.deliverable") %></h5>
+          <p class="card-text"><%= @project.deliverable %></p>
+        <% end %>
+
+        <div class="row mt-3">
+          <% if @project.target_date.present? %>
+            <div class="col-md-6">
+              <p class="mb-1"><strong><%= t("terakoya.projects.target_date") %>:</strong> <%= @project.target_date %></p>
+            </div>
+          <% end %>
+
+          <% if @project.started_at.present? %>
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Started:</strong> <%= @project.started_at.to_date %></p>
+            </div>
+          <% end %>
+
+          <% if @project.duration.present? %>
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Duration:</strong> <%= @project.duration %> days</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <p class="mb-0"><em>Chat, Notes, Todos, and Resources coming in Phase 2!</em></p>
+    </div>
+  </div>
+</div>

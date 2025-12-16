@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-12">
+    <h1 class="mb-4"><%= t("terakoya.dashboard.welcome") %>, <%= @student.display_name %>!</h1>
+  </div>
+</div>
+
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><%= t("terakoya.dashboard.active_projects") %></h2>
+    <%= link_to t("terakoya.projects.new"), new_project_path, class: "btn btn-success" %>
+  </div>
+
+  <% if @active_projects.any? %>
+    <div class="row">
+      <% @active_projects.each do |project| %>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card project-card h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= link_to project.title, project_path(project), class: "text-decoration-none" %>
+              </h5>
+              <span class="badge badge-<%= project.status %> mb-2">
+                <%= t("terakoya.projects.status.#{project.status}") %>
+              </span>
+              <p class="card-text"><%= project.description %></p>
+              <% if project.goal.present? %>
+                <p class="card-text"><strong><%= t("terakoya.projects.goal") %>:</strong> <%= truncate(project.goal, length: 100) %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <p class="mb-2"><%= t("terakoya.dashboard.no_projects") %></p>
+      <%= link_to t("terakoya.projects.new"), new_project_path, class: "btn btn-success" %>
+    </div>
+  <% end %>
+</section>
+
+<% if @completed_projects.any? %>
+  <section>
+    <h2 class="mb-3"><%= t("terakoya.dashboard.completed_projects") %></h2>
+    <div class="row">
+      <% @completed_projects.each do |project| %>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= link_to project.title, project_path(project), class: "text-decoration-none" %>
+              </h5>
+              <span class="badge badge-completed mb-2">
+                <%= t("terakoya.projects.status.completed") %>
+              </span>
+              <p class="card-text"><%= project.description %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>

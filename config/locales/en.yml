@@ -1,0 +1,39 @@
+en:
+  terakoya:
+    errors:
+      student_required: "Please create a student profile to continue"
+    students:
+      created: "Welcome to Terakoya! Let's start your learning journey."
+      updated: "Profile updated successfully"
+      new: "Create Your Student Profile"
+      display_name: "Display Name"
+      preferred_language: "Preferred Language"
+      bio: "About You"
+      goals: "Your Learning Goals"
+      timezone: "Timezone"
+    projects:
+      created: "Project created successfully. There are no perfect conditions - let's get started!"
+      updated: "Project updated successfully"
+      deleted: "Project deleted"
+      started: "Project started! You've got this."
+      paused: "Project paused"
+      resumed: "Project resumed"
+      completed: "Congratulations! Project completed!"
+      new: "Start a New Project"
+      title: "Project Title"
+      description: "Description"
+      goal: "What do you want to achieve?"
+      deliverable: "What will you have to show at the end?"
+      target_date: "Target Completion Date"
+      status:
+        planning: "Planning"
+        active: "Active"
+        paused: "Paused"
+        completed: "Completed"
+        archived: "Archived"
+    dashboard:
+      welcome: "Welcome to your learning journey"
+      no_projects: "Ready to start your first project? There are no perfect conditions."
+      active_projects: "Active Projects"
+      completed_projects: "Completed Projects"
+      recent_messages: "Recent Messages"

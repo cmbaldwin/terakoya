@@ -1,0 +1,39 @@
+ja:
+  terakoya:
+    errors:
+      student_required: "続けるには生徒プロフィールを作成してください"
+    students:
+      created: "寺子屋へようこそ！学びの旅を始めましょう。"
+      updated: "プロフィールを更新しました"
+      new: "生徒プロフィールを作成"
+      display_name: "表示名"
+      preferred_language: "使用言語"
+      bio: "自己紹介"
+      goals: "学習目標"
+      timezone: "タイムゾーン"
+    projects:
+      created: "プロジェクトを作成しました。完璧な条件なんてありません - 始めましょう！"
+      updated: "プロジェクトを更新しました"
+      deleted: "プロジェクトを削除しました"
+      started: "プロジェクトを開始しました！頑張りましょう。"
+      paused: "プロジェクトを一時停止しました"
+      resumed: "プロジェクトを再開しました"
+      completed: "おめでとうございます！プロジェクト完了！"
+      new: "新しいプロジェクトを始める"
+      title: "プロジェクト名"
+      description: "説明"
+      goal: "何を達成したいですか？"
+      deliverable: "最後に何を見せられますか？"
+      target_date: "目標完了日"
+      status:
+        planning: "計画中"
+        active: "進行中"
+        paused: "一時停止"
+        completed: "完了"
+        archived: "アーカイブ"
+    dashboard:
+      welcome: "学びの旅へようこそ"
+      no_projects: "最初のプロジェクトを始めませんか？完璧な条件なんてありません。"
+      active_projects: "進行中のプロジェクト"
+      completed_projects: "完了したプロジェクト"
+      recent_messages: "最近のメッセージ"
