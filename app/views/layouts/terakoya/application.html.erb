@@ -42,7 +42,8 @@
 
     <footer class="bg-light py-4 mt-5">
       <div class="container text-center text-muted">
-        <p class="mb-0"><em>"There is no perfect condition. Let's get started today."</em></p>
+        <% quote = Terakoya::MotivationalQuote.random %>
+        <p class="mb-0"><em>"<%= quote[:text] %>"</em> — <%= quote[:author] %></p>
       </div>
     </footer>
 

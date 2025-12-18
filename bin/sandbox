@@ -54,6 +54,9 @@ echo "~~~> Installing Devise"
 bundle exec rails generate devise:install
 bundle exec rails generate devise User
 
+echo "~~~> Installing Terakoya"
+bundle exec rails generate terakoya:install
+
 echo "~~~> Installing Terakoya migrations"
 bundle exec rails terakoya:install:migrations
 

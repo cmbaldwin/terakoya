@@ -2,22 +2,18 @@ module Terakoya
   class ApplicationController < ActionController::Base
     protect_from_forgery with: :exception
 
-    before_action :authenticate_user!
+    # Use the parent app's authentication
+    before_action :authenticate_user! if defined?(Devise)
+
     helper_method :current_student, :current_coach?, :terakoya_root_path
 
-    layout "terakoya/application"
+    layout 'terakoya/application'
 
     private
 
-    def authenticate_user!
-      send(Terakoya.config.authentication_method) if Terakoya.config.authentication_method
-    end
-
-    def current_user
-      send(Terakoya.config.current_user_method) if Terakoya.config.current_user_method
-    end
-
     def current_student
+      return nil unless respond_to?(:current_user) && current_user
+
       @current_student ||= Student.find_by(
         user_type: current_user.class.name,
         user_id: current_user.id
@@ -25,16 +21,16 @@ module Terakoya
     end
 
     def current_coach?
-      return false unless current_user
+      return false unless respond_to?(:current_user) && current_user
 
-      scope = Terakoya.config.coach_scope
-      scope.call(Terakoya.config.user_class_constantized.where(id: current_user.id)).exists?
+      # For now, simplified - can be configured later
+      current_user.respond_to?(:role) && current_user.role == 'coach'
     end
 
     def require_student!
-      unless current_student
-        redirect_to new_student_path, alert: t("terakoya.errors.student_required")
-      end
+      return if current_student
+
+      redirect_to new_student_path, alert: t('terakoya.errors.student_required')
     end
 
     def terakoya_root_path
