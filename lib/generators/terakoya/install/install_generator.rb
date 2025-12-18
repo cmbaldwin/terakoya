@@ -3,12 +3,12 @@
 module Terakoya
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      source_root File.expand_path("templates", __dir__)
+      source_root File.expand_path('templates', __dir__)
 
-      desc "Creates a Terakoya initializer and copy locale files to your application."
+      desc 'Creates a Terakoya initializer and copy locale files to your application.'
 
       def copy_initializer
-        template "terakoya.rb", "config/initializers/terakoya.rb"
+        template 'terakoya.rb', 'config/initializers/terakoya.rb'
       end
 
       def mount_engine
@@ -16,7 +16,7 @@ module Terakoya
       end
 
       def show_readme
-        readme "README" if behavior == :invoke
+        readme 'README' if behavior == :invoke
       end
     end
   end

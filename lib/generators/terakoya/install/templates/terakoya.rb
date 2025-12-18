@@ -2,14 +2,14 @@
 
 Terakoya.configure do |config|
   # The class name of your user model (e.g. "User", "Account")
-  config.user_class = "User"
+  config.user_class = 'User'
 
   # The class name of your coach/mentor model (usually same as user_class)
-  config.coach_class = "User"
+  config.coach_class = 'User'
 
   # A proc that returns coaches from your user class
   # Example: ->(users) { users.where(role: "coach") }
-  config.coach_scope = ->(users) { users.where(role: "coach") }
+  config.coach_scope = ->(users) { users.where(role: 'coach') }
 
   # The method to call for authentication (e.g. :authenticate_user!)
   config.authentication_method = :authenticate_user!

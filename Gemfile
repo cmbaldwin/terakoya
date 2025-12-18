@@ -1,14 +1,14 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 # Specify your gem's dependencies in terakoya.gemspec
 gemspec
 
-gem "sqlite3"
-gem "sprockets-rails"
+gem 'sprockets-rails'
+gem 'sqlite3'
 
 group :development, :test do
-  gem "debug"
-  gem "rubocop"
-  gem "rubocop-rails"
-  gem "devise" # For sandbox testing
+  gem 'debug'
+  gem 'devise' # For sandbox testing
+  gem 'rubocop'
+  gem 'rubocop-rails'
 end

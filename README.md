@@ -67,7 +67,7 @@ end
 
 - Ruby >= 3.2
 - Rails >= 8.0
-- PostgreSQL (recommended) or MySQL
+- PostgreSQL (required for jsonb columns)
 
 ## Development
 
@@ -76,17 +76,15 @@ end
 To test Terakoya locally during development, use the sandbox application:
 
 ```bash
-# Create the sandbox with SQLite (default)
+# Create the sandbox with PostgreSQL (default)
 bin/sandbox
 
-# Or with PostgreSQL
-DB=postgresql bin/sandbox
-
-# Or with MySQL
+# Or explicitly with MySQL
 DB=mysql bin/sandbox
 ```
 
 This will create a complete Rails application in the `sandbox/` directory with:
+
 - Terakoya engine mounted
 - Devise authentication set up
 - A test user: `student@example.com` / `password`

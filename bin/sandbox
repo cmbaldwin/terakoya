@@ -4,18 +4,17 @@
 
 set -e
 
+# Default to PostgreSQL since we use jsonb columns
 case "$DB" in
-postgres|postgresql)
-  RAILSDB="postgresql"
-  ;;
 mysql)
   RAILSDB="mysql"
   ;;
-sqlite|'')
-  RAILSDB="sqlite3"
+postgresql|postgres|'')
+  RAILSDB="postgresql"
   ;;
 *)
   echo "Invalid DB specified: $DB"
+  echo "Supported: postgresql (default), mysql"
   exit 1
   ;;
 esac
@@ -23,9 +22,8 @@ esac
 echo "~~~> Removing the old sandbox"
 rm -rf ./sandbox
 
-echo "~~~> Creating a pristine Rails app"
-rails_version=$(ruby -e 'puts "~> 8.0"')
-bundle exec rails new sandbox \
+echo "~~~> Creating a pristine Rails app with $RAILSDB"
+rails new sandbox \
   --database="$RAILSDB" \
   --skip-git \
   --skip-keeps \
@@ -79,12 +77,12 @@ bundle exec rails db:seed
 
 echo "
 🎓 Sandbox created successfully!
-🎓 
+🎓
 🎓 To start the server:
 🎓   cd sandbox
 🎓   bin/rails server
-🎓 
+🎓
 🎓 Then visit http://localhost:3000/terakoya
-🎓 
+🎓
 🎓 Test credentials: student@example.com / password
 "
