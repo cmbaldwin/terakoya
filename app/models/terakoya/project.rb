@@ -1,10 +1,11 @@
 module Terakoya
   class Project < ApplicationRecord
     # Associations
-    belongs_to :student
+    belongs_to :owner, polymorphic: true
+    belongs_to :terakoya_class, class_name: "Terakoya::Class", optional: true
 
     has_many :messages, dependent: :destroy
-    has_many :notes, dependent: :destroy
+    has_many :notes, as: :notable, dependent: :destroy, class_name: "Terakoya::Note"
     has_many :todos, dependent: :destroy
     has_many :reminders, dependent: :destroy
     has_many :resources, dependent: :destroy
@@ -12,6 +13,7 @@ module Terakoya
     # Validations
     validates :title, presence: true
     validates :status, inclusion: { in: %w[planning active paused completed archived] }
+    validates :visibility, inclusion: { in: %w[private class_only public] }, allow_nil: true
 
     # Scopes
     scope :planning, -> { where(status: "planning") }
