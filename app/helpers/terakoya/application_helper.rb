@@ -50,5 +50,15 @@ module Terakoya
       else "#3788d8"
       end
     end
+
+    def class_status_color(status)
+      case status.to_s
+      when "draft" then "secondary"
+      when "active" then "success"
+      when "paused" then "warning"
+      when "archived" then "dark"
+      else "secondary"
+      end
+    end
   end
 end
