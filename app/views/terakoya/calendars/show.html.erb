@@ -1,0 +1,124 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1><%= @calendar.display_name %></h1>
+      <p class="text-muted">
+        <%= leader_mode? ? t('terakoya.calendars.leader_view') : t('terakoya.calendars.partner_view') %>
+      </p>
+    </div>
+    <div class="col-auto">
+      <%= link_to t('terakoya.calendars.settings'), edit_calendar_path, class: "btn btn-outline-secondary" if @calendar.owner == current_role %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div
+            data-controller="calendar"
+            data-calendar-events-url-value="<%= calendar_path(format: :json) %>"
+            data-calendar-create-url-value="<%= events_path(format: :json) %>"
+            data-calendar-update-url-value="<%= event_path(':id', format: :json) %>"
+            data-calendar-editable-value="<%= @calendar.owner == current_role %>"
+            data-calendar-selectable-value="<%= @calendar.owner == current_role %>"
+          >
+            <div data-calendar-target="container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if leader_mode? && @calendar.owner == current_leader %>
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><%= t('terakoya.events.pending_approvals') %></h5>
+          </div>
+          <div class="card-body">
+            <% pending_events = @calendar.events.pending_approval %>
+            <% if pending_events.any? %>
+              <ul class="list-group list-group-flush">
+                <% pending_events.limit(10).each do |event| %>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong><%= event.title %></strong><br>
+                      <small class="text-muted">
+                        <%= l(event.start_time, format: :long) %>
+                        <br>
+                        <%= t('terakoya.events.requested_by') %>: <%= event.creator.display_name %>
+                      </small>
+                    </div>
+                    <div class="btn-group" role="group">
+                      <%= button_to t('terakoya.events.confirm'), confirm_event_path(event),
+                          method: :post, class: "btn btn-sm btn-success" %>
+                      <%= button_to t('terakoya.events.decline'), cancel_event_path(event),
+                          method: :post, class: "btn btn-sm btn-danger" %>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="text-muted mb-0"><%= t('terakoya.events.no_pending_approvals') %></p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><%= t('terakoya.calendars.quick_stats') %></h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-6 mb-3">
+                <h3 class="mb-0"><%= @calendar.upcoming_events.count %></h3>
+                <small class="text-muted"><%= t('terakoya.events.upcoming') %></small>
+              </div>
+              <div class="col-6 mb-3">
+                <h3 class="mb-0"><%= @calendar.events.pending_approval.count %></h3>
+                <small class="text-muted"><%= t('terakoya.events.pending') %></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Include FullCalendar CSS -->
+<%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css" %>
+<%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.css" %>
+<%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/main.min.css" %>
+
+<style>
+  .fc-event-busy {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    opacity: 0.6;
+  }
+
+  .fc-event-booking {
+    background-color: #3788d8 !important;
+    border-color: #3788d8 !important;
+  }
+
+  .fc-event-class_session {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+  }
+
+  .fc-event-office_hours {
+    background-color: #eab308 !important;
+    border-color: #eab308 !important;
+  }
+
+  .fc-event-personal {
+    background-color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+  }
+</style>

@@ -1,0 +1,192 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to t('terakoya.calendar.view_all'), calendar_path %></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= @event.title %></li>
+        </ol>
+      </nav>
+
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h1><%= @event.title %></h1>
+          <p class="text-muted mb-2">
+            <%= event_type_icon(@event.event_type) %>
+            <%= t("terakoya.events.types.#{@event.event_type}") %>
+          </p>
+        </div>
+        <span class="badge bg-<%= event_status_color(@event.status) %> fs-6">
+          <%= t("terakoya.events.status.#{@event.status}") %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <!-- Event Details Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><%= t('terakoya.events.details') %></h5>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.start_time') %></h6>
+              <p class="mb-0"><%= l(@event.start_time, format: :long) %></p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.end_time') %></h6>
+              <p class="mb-0"><%= l(@event.end_time, format: :long) %></p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.duration') %></h6>
+              <p class="mb-0"><%= format_duration(@event.duration_minutes) %></p>
+            </div>
+            <% if @event.terakoya_class %>
+              <div class="col-md-6">
+                <h6 class="text-muted mb-1"><%= t('terakoya.classes.class') %></h6>
+                <p class="mb-0">
+                  <%= link_to @event.terakoya_class.name, terakoya_class_path(@event.terakoya_class) %>
+                </p>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @event.description.present? %>
+            <div class="mb-3">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.description') %></h6>
+              <p class="mb-0"><%= simple_format(@event.description) %></p>
+            </div>
+          <% end %>
+
+          <% if @event.location.present? %>
+            <div class="mb-3">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.location') %></h6>
+              <p class="mb-0"><%= @event.location %></p>
+            </div>
+          <% end %>
+
+          <% if @event.meeting_link.present? %>
+            <div class="mb-3">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.meeting_link') %></h6>
+              <p class="mb-0">
+                <%= link_to @event.meeting_link, @event.meeting_link, target: "_blank", class: "btn btn-primary" %>
+              </p>
+            </div>
+          <% end %>
+
+          <% if @event.join_instructions.present? %>
+            <div class="mb-3">
+              <h6 class="text-muted mb-1"><%= t('terakoya.events.instructions') %></h6>
+              <p class="mb-0"><%= simple_format(@event.join_instructions) %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Event Notes -->
+      <% if @event.notes.any? %>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><%= t('terakoya.events.notes') %></h5>
+          </div>
+          <div class="card-body">
+            <% @event.notes.published.each do |note| %>
+              <div class="mb-3 pb-3 border-bottom">
+                <h6><%= note.title.presence || t('terakoya.notes.untitled') %></h6>
+                <p class="mb-1"><%= truncate(note.content.to_plain_text, length: 300) %></p>
+                <small class="text-muted">
+                  <%= t('terakoya.notes.by') %> <%= note.author.display_name %> •
+                  <%= time_ago_in_words(note.created_at) %> <%= t('terakoya.notes.ago') %>
+                </small>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+      <!-- Event Actions -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h6 class="mb-0"><%= t('terakoya.events.actions') %></h6>
+        </div>
+        <div class="card-body">
+          <% if leader_mode? && @event.calendar.owner == current_leader && @event.status == 'pending' %>
+            <%= button_to t('terakoya.events.confirm'), confirm_event_path(@event),
+                method: :post, class: "btn btn-success w-100 mb-2" %>
+            <%= button_to t('terakoya.events.decline'), cancel_event_path(@event),
+                method: :post, class: "btn btn-danger w-100 mb-2" %>
+          <% end %>
+
+          <% if @event.creator == current_role || @event.calendar.owner == current_role %>
+            <%= link_to t('terakoya.actions.edit'), edit_event_path(@event), class: "btn btn-outline-primary w-100 mb-2" %>
+
+            <% if @event.can_be_cancelled? %>
+              <%= button_to t('terakoya.events.cancel_event'), cancel_event_path(@event),
+                  method: :post, data: { confirm: t('terakoya.events.cancel_confirm') },
+                  class: "btn btn-outline-danger w-100 mb-2" %>
+            <% end %>
+          <% end %>
+
+          <%= link_to t('terakoya.calendar.view_all'), calendar_path, class: "btn btn-outline-secondary w-100" %>
+        </div>
+      </div>
+
+      <!-- Event Info -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h6 class="mb-0"><%= t('terakoya.events.info') %></h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <div class="list-group-item">
+            <small class="text-muted d-block"><%= t('terakoya.events.created_by') %></small>
+            <%= @event.creator.display_name %>
+          </div>
+
+          <% if @event.capacity %>
+            <div class="list-group-item">
+              <small class="text-muted d-block"><%= t('terakoya.events.capacity') %></small>
+              <%= @event.current_attendees %> / <%= @event.capacity %>
+              <% if @event.at_capacity? %>
+                <span class="badge bg-warning"><%= t('terakoya.classes.full') %></span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <% if @event.cancellation_deadline_hours %>
+            <div class="list-group-item">
+              <small class="text-muted d-block"><%= t('terakoya.events.cancellation_deadline') %></small>
+              <%= @event.cancellation_deadline_hours %> <%= t('terakoya.events.hours_before') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Participants -->
+      <% if @event.event_participants.any? %>
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0"><%= t('terakoya.events.participants') %> (<%= @event.event_participants.confirmed.count %>)</h6>
+          </div>
+          <div class="list-group list-group-flush">
+            <% @event.event_participants.confirmed.each do |participant| %>
+              <div class="list-group-item">
+                <%= participant.participant.display_name %>
+                <% if participant.organizer? %>
+                  <span class="badge bg-primary"><%= t('terakoya.events.organizer') %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
