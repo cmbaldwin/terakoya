@@ -1,0 +1,101 @@
+<%= form_with model: terakoya_class, url: terakoya_class.persisted? ? terakoya_class_path(terakoya_class) : terakoya_classes_path, local: true do |f| %>
+  <% if terakoya_class.errors.any? %>
+    <div class="alert alert-danger">
+      <h5><%= t('errors.messages.not_saved', count: terakoya_class.errors.count, resource: 'Class') %></h5>
+      <ul class="mb-0">
+        <% terakoya_class.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, t('terakoya.classes.name'), class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", required: true, autofocus: true,
+        placeholder: t('terakoya.classes.name_placeholder') %>
+    <div class="form-text"><%= t('terakoya.classes.name_help') %></div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, t('terakoya.classes.description'), class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 4,
+        placeholder: t('terakoya.classes.description_placeholder') %>
+    <div class="form-text"><%= t('terakoya.classes.description_help') %></div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :status, t('terakoya.classes.status'), class: "form-label" %>
+      <%= f.select :status, [
+        [t('terakoya.classes.status.draft'), 'draft'],
+        [t('terakoya.classes.status.active'), 'active'],
+        [t('terakoya.classes.status.paused'), 'paused'],
+        [t('terakoya.classes.status.archived'), 'archived']
+      ], {}, class: "form-select" %>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :visibility, t('terakoya.classes.visibility_label'), class: "form-label" %>
+      <%= f.select :visibility, [
+        [t('terakoya.classes.visibility.public'), 'public'],
+        [t('terakoya.classes.visibility.private'), 'private'],
+        [t('terakoya.classes.visibility.unlisted'), 'unlisted']
+      ], {}, class: "form-select" %>
+      <div class="form-text"><%= t('terakoya.classes.visibility_help') %></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :capacity, t('terakoya.classes.capacity'), class: "form-label" %>
+      <%= f.number_field :capacity, class: "form-control", min: 1,
+          placeholder: t('terakoya.classes.capacity_placeholder') %>
+      <div class="form-text"><%= t('terakoya.classes.capacity_help') %></div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :color, t('terakoya.classes.color'), class: "form-label" %>
+      <div class="input-group">
+        <%= f.color_field :color, class: "form-control form-control-color", value: terakoya_class.color || "#3788d8" %>
+        <%= f.text_field :color, class: "form-control", value: terakoya_class.color || "#3788d8",
+            pattern: "^#[0-9A-Fa-f]{6}$" %>
+      </div>
+      <div class="form-text"><%= t('terakoya.classes.color_help') %></div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :meeting_schedule, t('terakoya.classes.meeting_schedule'), class: "form-label" %>
+    <%= f.text_field :meeting_schedule, class: "form-control",
+        placeholder: t('terakoya.classes.meeting_schedule_placeholder') %>
+    <div class="form-text"><%= t('terakoya.classes.meeting_schedule_help') %></div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :timezone, t('terakoya.classes.timezone'), class: "form-label" %>
+    <%= f.select :timezone, ActiveSupport::TimeZone.all.map { |tz| [tz.name, tz.name] },
+        { selected: terakoya_class.timezone || "UTC" }, class: "form-select" %>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :starts_at, t('terakoya.classes.starts_at'), class: "form-label" %>
+      <%= f.datetime_local_field :starts_at, class: "form-control" %>
+      <div class="form-text"><%= t('terakoya.classes.starts_at_help') %></div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :ends_at, t('terakoya.classes.ends_at'), class: "form-label" %>
+      <%= f.datetime_local_field :ends_at, class: "form-control" %>
+      <div class="form-text"><%= t('terakoya.classes.ends_at_help') %></div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <%= link_to t('terakoya.actions.cancel'), terakoya_class.persisted? ? terakoya_class_path(terakoya_class) : terakoya_classes_path,
+        class: "btn btn-outline-secondary" %>
+    <%= f.submit terakoya_class.persisted? ? t('terakoya.classes.update') : t('terakoya.classes.create'),
+        class: "btn btn-success" %>
+  </div>
+<% end %>

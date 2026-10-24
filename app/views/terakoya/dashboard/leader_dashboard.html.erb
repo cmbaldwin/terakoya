@@ -1,0 +1,192 @@
+<div class="container mt-4">
+  <!-- Mode Switcher -->
+  <div class="row mb-4">
+    <div class="col">
+      <div
+        data-controller="mode-switcher"
+        data-mode-switcher-current-mode-value="leader"
+        data-mode-switcher-switch-url-value="<%= switch_mode_path %>"
+      >
+        <div class="btn-group" role="group">
+          <% if current_partner %>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              data-mode-switcher-target="button"
+              data-mode="partner"
+              data-action="click->mode-switcher#switch"
+            >
+              <%= t('terakoya.modes.partner') %>
+            </button>
+          <% end %>
+          <button
+            type="button"
+            class="btn btn-outline-primary active"
+            data-mode-switcher-target="button"
+            data-mode="leader"
+            data-action="click->mode-switcher#switch"
+          >
+            <%= t('terakoya.modes.leader') %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome Section -->
+  <div class="row mb-4">
+    <div class="col">
+      <h1><%= t('terakoya.dashboard.welcome_leader', name: @leader.display_name) %></h1>
+      <p class="lead text-muted"><%= t('terakoya.dashboard.leader_subtitle') %></p>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="mb-0"><%= @classes.count %></h3>
+          <small class="text-muted"><%= t('terakoya.dashboard.my_classes') %></small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="mb-0"><%= @total_partners %></h3>
+          <small class="text-muted"><%= t('terakoya.dashboard.total_partners') %></small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card text-center bg-warning text-white">
+        <div class="card-body">
+          <h3 class="mb-0"><%= @pending_approvals.count %></h3>
+          <small><%= t('terakoya.dashboard.pending_approvals') %></small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <%= link_to calendar_path, class: "text-decoration-none" do %>
+            <h3 class="mb-0">📅</h3>
+            <small class="text-muted"><%= t('terakoya.dashboard.manage_calendar') %></small>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Pending Approvals -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-warning">
+        <div class="card-header bg-warning text-white">
+          <h5 class="mb-0"><%= t('terakoya.dashboard.pending_approvals') %></h5>
+        </div>
+        <div class="card-body">
+          <% if @pending_approvals.any? %>
+            <ul class="list-group list-group-flush">
+              <% @pending_approvals.each do |event| %>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <h6 class="mb-1"><%= event.title %></h6>
+                      <small class="text-muted">
+                        <%= l(event.start_time, format: :short) %>
+                        <br><%= t('terakoya.events.requested_by') %>: <%= event.creator.display_name %>
+                      </small>
+                    </div>
+                  </div>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <%= button_to t('terakoya.events.confirm'), confirm_event_path(event),
+                        method: :post, class: "btn btn-success btn-sm" %>
+                    <%= button_to t('terakoya.events.decline'), cancel_event_path(event),
+                        method: :post, class: "btn btn-danger btn-sm" %>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted"><%= t('terakoya.dashboard.no_pending_approvals') %></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Classes -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><%= t('terakoya.dashboard.my_classes') %></h5>
+          <%= link_to t('terakoya.classes.create'), new_terakoya_class_path, class: "btn btn-sm btn-primary" %>
+        </div>
+        <div class="card-body">
+          <% if @classes.any? %>
+            <div class="list-group list-group-flush">
+              <% @classes.each do |klass| %>
+                <%= link_to terakoya_class_path(klass), class: "list-group-item list-group-item-action" do %>
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1"><%= klass.name %></h6>
+                    <span class="badge bg-primary"><%= klass.current_members %> <%= t('terakoya.classes.members') %></span>
+                  </div>
+                  <p class="mb-1 text-muted"><%= truncate(klass.description, length: 100) %></p>
+                  <small class="text-muted">
+                    <%= t('terakoya.classes.created') %>: <%= l(klass.created_at, format: :short) %>
+                  </small>
+                <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-muted"><%= t('terakoya.dashboard.no_classes_leader') %></p>
+            <%= link_to t('terakoya.classes.create_first'), new_terakoya_class_path, class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Events -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><%= t('terakoya.dashboard.upcoming_events') %></h5>
+          <%= link_to t('terakoya.calendar.view_all'), calendar_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+        <div class="card-body">
+          <% if @upcoming_events.any? %>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th><%= t('terakoya.events.title') %></th>
+                    <th><%= t('terakoya.events.start_time') %></th>
+                    <th><%= t('terakoya.events.type') %></th>
+                    <th><%= t('terakoya.events.status') %></th>
+                    <th><%= t('terakoya.events.attendees') %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @upcoming_events.each do |event| %>
+                    <tr>
+                      <td><%= event.title %></td>
+                      <td><%= l(event.start_time, format: :short) %></td>
+                      <td><span class="badge bg-info"><%= t("terakoya.events.types.#{event.event_type}") %></span></td>
+                      <td><span class="badge bg-<%= event_status_color(event.status) %>"><%= t("terakoya.events.status.#{event.status}") %></span></td>
+                      <td><%= event.current_attendees %><%= " / #{event.capacity}" if event.capacity %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-muted"><%= t('terakoya.dashboard.no_upcoming_events') %></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

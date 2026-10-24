@@ -1,0 +1,77 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1><%= t('terakoya.classes.all_classes') %></h1>
+      <p class="text-muted"><%= t('terakoya.classes.browse_description') %></p>
+    </div>
+    <div class="col-auto">
+      <% if current_leader %>
+        <%= link_to t('terakoya.classes.create'), new_terakoya_class_path, class: "btn btn-success" %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @classes.any? %>
+    <div class="row">
+      <% @classes.each do |klass| %>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-header" style="background-color: <%= klass.color %>20; border-left: 4px solid <%= klass.color %>;">
+              <h5 class="mb-0"><%= klass.name %></h5>
+              <small class="text-muted">
+                <span class="badge" style="background-color: <%= klass.color %>;">
+                  <%= t("terakoya.classes.visibility.#{klass.visibility}") %>
+                </span>
+              </small>
+            </div>
+            <div class="card-body">
+              <p class="card-text"><%= truncate(klass.description, length: 150) %></p>
+
+              <div class="mb-2">
+                <small class="text-muted">
+                  <strong><%= t('terakoya.classes.leader') %>:</strong> <%= klass.leader.display_name %>
+                </small>
+              </div>
+
+              <div class="mb-2">
+                <small class="text-muted">
+                  <strong><%= t('terakoya.classes.members') %>:</strong>
+                  <%= klass.current_members %>
+                  <% if klass.capacity %>
+                    / <%= klass.capacity %>
+                  <% end %>
+                </small>
+              </div>
+
+              <% if klass.at_capacity? %>
+                <span class="badge bg-warning"><%= t('terakoya.classes.full') %></span>
+              <% elsif klass.status != 'active' %>
+                <span class="badge bg-secondary"><%= t("terakoya.classes.status.#{klass.status}") %></span>
+              <% end %>
+            </div>
+            <div class="card-footer bg-transparent">
+              <%= link_to t('terakoya.classes.view_details'), terakoya_class_path(klass), class: "btn btn-sm btn-outline-primary" %>
+
+              <% if partner_mode? && current_partner && klass.can_accept_members? && !klass.partners.include?(current_partner) %>
+                <%= button_to t('terakoya.classes.join'), join_terakoya_class_path(klass),
+                    method: :post, class: "btn btn-sm btn-primary" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <h4><%= t('terakoya.classes.no_classes_available') %></h4>
+      <p class="mb-0">
+        <% if current_leader %>
+          <%= t('terakoya.classes.create_first_class') %>
+          <%= link_to t('terakoya.classes.create'), new_terakoya_class_path, class: "btn btn-primary" %>
+        <% else %>
+          <%= t('terakoya.classes.check_back_later') %>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+</div>
